@@ -1,17 +1,17 @@
 package com.miniowaPM.youtube_but_worse.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.miniowaPM.youtube_but_worse.dto.VideoUploadRequest;
 import com.miniowaPM.youtube_but_worse.service.VideoStorageService;
 
 
 @RestController
-@RequestMapping("/api/videos")
+@RequestMapping("/api/video")
 public class VideoController {
     private final VideoStorageService videoService;
 
@@ -20,10 +20,9 @@ public class VideoController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadVideo(@RequestBody MultipartFile videoFile) {
-        String videoUploadResponse = videoService.uploadVideo(videoFile);
+    public ResponseEntity<String> uploadVideo(@ModelAttribute VideoUploadRequest request) {
+        String videoUploadResponse = videoService.uploadVideo(request.getVideoFile(), request.getTitle(), request.getDescription());
 
         return ResponseEntity.ok(videoUploadResponse);
     }
-    
 }

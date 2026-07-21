@@ -3,6 +3,7 @@ package com.miniowaPM.youtube_but_worse.controller;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -40,6 +41,12 @@ public class VideoController {
         String videoUploadResponse = videoService.uploadVideo(request.getVideoFile(), request.getTitle(), request.getDescription());
 
         return ResponseEntity.ok(videoUploadResponse);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<Video>> getAllVideos() {
+        List<Video> allVideos = videoRepository.findAll();
+        return ResponseEntity.ok(allVideos);
     }
 
     @GetMapping("/{id}")

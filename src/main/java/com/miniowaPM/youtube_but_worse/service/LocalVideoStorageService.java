@@ -19,10 +19,12 @@ public class LocalVideoStorageService implements VideoStorageService {
     
     private final VideoRepository videoRepository;
     private final StorageProperties storageProperties;
+    private final ThumbnailService thumbnailService;
 
-    public LocalVideoStorageService(VideoRepository videoRepository, StorageProperties storageProperties) {
+    public LocalVideoStorageService(VideoRepository videoRepository, StorageProperties storageProperties, ThumbnailService thumbnailService) {
         this.videoRepository = videoRepository;
         this.storageProperties = storageProperties;
+        this.thumbnailService = thumbnailService;
     }
 
     @Override
@@ -40,14 +42,21 @@ public class LocalVideoStorageService implements VideoStorageService {
             String orginalFilename = videoFile.getOriginalFilename();
             String uniqueFilename = UUID.randomUUID().toString() + "_" + orginalFilename;
 
-            Path filePath = storagePath.resolve(uniqueFilename);
+            Path videoFilePath = storagePath.resolve(uniqueFilename);
             
-            Files.copy(videoFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(videoFile.getInputStream(), videoFilePath, StandardCopyOption.REPLACE_EXISTING);
+
+            String author = "author";
+
+            String thumbnailUrlPath = thumbnailService.generateThumbnail(videoFilePath.toString());
 
             Video video = new Video();
             video.setTitle(title);
+            video.setUrl(videoFilePath.toString());
+            video.setAuthor(author);
             video.setDescription(description);
-            video.setUrl(filePath.toString());
+            video.setViews(0);
+            video.setThumbnailUrl(thumbnailUrlPath);
             
             videoRepository.save(video);
 

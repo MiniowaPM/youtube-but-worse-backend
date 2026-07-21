@@ -49,6 +49,28 @@ public class VideoController {
         return ResponseEntity.ok(video);
     }
 
+    @GetMapping("/{id}/thumbnail")
+    public ResponseEntity<Resource> getVideoThumbnail(@PathVariable Long id) {
+        Video video = videoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Video not found with id: " + id));
+        
+        try {
+            Path thumbnailPath = Paths.get(video.getThumbnailUrl());
+
+            Resource resource = new UrlResource(thumbnailPath.toUri());
+
+            if (resource.exists() && resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM))
+                        .body(resource);
+            } else {
+                throw new RuntimeException("Could not read the file!");
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/stream/{id}")
     public ResponseEntity<Resource> streamVideo(@PathVariable Long id) {
         Video video = videoRepository.findById(id)
@@ -70,5 +92,4 @@ public class VideoController {
             throw new RuntimeException("Error: " + e.getMessage());
         }
     }
-    
 }

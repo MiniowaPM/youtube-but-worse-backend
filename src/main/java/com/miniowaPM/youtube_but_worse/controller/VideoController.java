@@ -10,6 +10,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import com.miniowaPM.youtube_but_worse.service.VideoStorageService;
 
 @RestController
 @RequestMapping("/api/video")
+@CrossOrigin(origins = "http://localhost:5173")
 public class VideoController {
     private final VideoStorageService videoService;
     private final VideoRepository videoRepository;
